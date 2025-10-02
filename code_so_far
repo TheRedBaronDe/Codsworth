@@ -1,0 +1,40 @@
+# import the important stuff, once I actually know which ones I need
+import random
+
+# list of responses
+
+responses = {
+    "Hello": ["Good day, Victoria!", "Greetings, V!", "Oh, hello there!", "Hi, there!", "How can I assist you, ma'am?"],
+    "Hi": ["Good day, Victoria!", "Greetings, V!", "Oh, hello there!", "Hi, there!", "How can I assist you, ma'am?"],
+
+    "How are you?": ["I'm feeling whatever you're typing right now, ma'am.", "Just had a horrible dream last night. I was a program written in C!", "I'm *feeling* great"],
+    "What's your name?": ["Why, I'm Codsworth, of course!", "Having amnesia, aren't we, ma'am?"],
+
+    "Tell me a joke": ["Why do programmers prefer dark mode? Because light attracts bugs!", "Why do Java developers wear glasses? Because they don't see sharp.", 
+                       "How many programmers does it take to change a light bulb? None, that's a hardware problem!", 
+                       "A proton walks into a bar and asks, 'Do you want to hear a joke about electrons?' The bartender replies, 'I'm positive.'"],
+}
+
+# function to get a response based on user input
+
+def get_response(user_input):
+
+    for key in responses:
+        if key.lower() in user_input.lower():
+            return random.choice(responses[key])
+        
+    return "I'm not sure how to respond to that, ma'am."
+
+# main loop to interact with the user
+
+def main(): 
+    print("Codsworth at your service, ma'am!")
+
+    while True:
+        user_input = input("You: ")
+        if user_input.lower() == 'exit':
+            print("Codsworth: Goodbye, ma'am!")
+            break
+
+        response = get_response(user_input)
+        print(f"Codsworth: {response}") 

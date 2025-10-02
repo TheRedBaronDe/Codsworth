@@ -24,17 +24,3 @@ def get_response(user_input):
             return random.choice(responses[key])
         
     return "I'm not sure how to respond to that, ma'am."
-
-# main loop to interact with the user
-
-def main(): 
-    print("Codsworth at your service, ma'am!")
-
-    while True:
-        user_input = input("You: ")
-        if user_input.lower() == 'exit':
-            print("Codsworth: Goodbye, ma'am!")
-            break
-
-        response = get_response(user_input)
-        print(f"Codsworth: {response}") 

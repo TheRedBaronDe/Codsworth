@@ -8,19 +8,40 @@ responses = {
     "Hi": ["Good day, Victoria!", "Greetings, V!", "Oh, hello there!", "Hi, there!", "How can I assist you, ma'am?"],
 
     "How are you?": ["I'm feeling whatever you're typing right now, ma'am.", "Just had a horrible dream last night. I was a program written in C!", "I'm *feeling* great"],
+
     "What's your name?": ["Why, I'm Codsworth, of course!", "Having amnesia, aren't we, ma'am?"],
 
     "Tell me a joke": ["Why do programmers prefer dark mode? Because light attracts bugs!", "Why do Java developers wear glasses? Because they don't see sharp.", 
-                       "How many programmers does it take to change a light bulb? None, that's a hardware problem!", 
-                       "A proton walks into a bar and asks, 'Do you want to hear a joke about electrons?' The bartender replies, 'I'm positive.'"],
-}
+      "How many programmers does it take to change a light bulb? None, that's a hardware problem!", 
+      "A proton walks into a bar and asks, 'Do you want to hear a joke about electrons?' The bartender replies, 'I'm positive.'", "I went to the zoo the other day and they only had a dog! It was a Shitzu"],
 
-# function to get a response based on user input
+    "I love you, Cods": ["That's certainly sad.", "Getting emotional, ma'am?", "I love you too."],
+
+    "You're my pride and joy": ["Why, thank you, ma'am!", "I'm great, right?", "The best A.I in the whole neighbourhood, innit?"],
+
+    "Be British": ["Innit, fam?"],
+}
 
 def get_response(user_input):
 
     for key in responses:
         if key.lower() in user_input.lower():
             return random.choice(responses[key])
+        pass
         
     return "I'm not sure how to respond to that, ma'am."
+
+# get user's input
+
+def main():
+    print("Codsworth: Hello, ma'am! Need anything?" )
+    while True:
+        user_input_text = input("Me: ")
+        if user_input_text.lower() in ["exit", "quit", "bye"]:
+            print("Codsworth: Goodbye, ma'am!")
+            break
+        response = get_response(user_input_text)
+        print(f"Codsworth: {response}")
+    
+if __name__ == "__main__":
+    main()

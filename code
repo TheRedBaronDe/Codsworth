@@ -1,0 +1,73 @@
+# import the important stuff, once I actually know which ones I need
+import random
+import re
+
+# list of responses
+
+responses = {
+    "Greetings": ["Good day, Victoria!", "Greetings, V!", "Oh, hello there!", "Hi, there!", "How can I assist you, ma'am?"],
+
+    "How are you?": ["Just had a horrible dream last night. I was a program written in C!", "I'm *feeling* great"],
+
+    "Who Cods": ["Why, I'm Codsworth, of course!", "Having amnesia, aren't we, ma'am?"],
+
+    "Joke": ["Why do programmers prefer dark mode? Because light attracts bugs!", "Why do Java developers wear glasses? Because they don't see sharp.", 
+      "How many programmers does it take to change a light bulb? None, that's a hardware problem!", 
+      "A proton walks into a bar and asks, 'Do you want to hear a joke about electrons?' The bartender replies, 'I'm positive.'", "I went to the zoo the other day and they only had a dog! It was a Shitzu"],
+
+    "Love": ["That's certainly sad.", "Getting emotional, ma'am?", "I love you too."],
+
+    "Pride": ["Why, thank you, ma'am!", "I'm great, right?", "The best A.I in the whole neighbourhood, innit?"],
+
+    "British": ["Innit, fam?"],
+}
+
+# get user's input
+
+def get_response(user_input):
+    
+    # uses RegEx to match patterns and make the code cleaner and "smarter"
+
+    pattern = r"\b(hello|hi|hey|greetings|morning)\b"  # matches greetings :)
+    if re.search(pattern, user_input, re.IGNORECASE):
+        return random.choice(responses["Greetings"])
+    
+    pattern = r"\b(how are you|how's it going|how do you do|how are you feeling|are you okay|everything alright)\b"  # matches "how are you" variations :]
+    if re.search(pattern, user_input, re.IGNORECASE):
+        return random.choice(responses["How are you?"])
+    
+    pattern = r"\b(who are you|what is your name|who is cods)\b" # matches "who are you" variations :O
+    if re.search(pattern, user_input, re.IGNORECASE):
+        return random.choice(responses["Who Cods"])
+    
+    pattern = r"\b(tell me a joke|make me laugh|say something funny|joke)\b"  # matches jokes hahahah :D
+    if re.search(pattern, user_input, re.IGNORECASE):
+        return random.choice(responses["Joke"])
+    
+    pattern = r"\b(i love you|love you|love ya|i like you|like you)\b"  # matches "I love you" delcarations <3
+    if re.search(pattern, user_input, re.IGNORECASE):
+        return random.choice(responses["Love"])
+    
+    pattern = r"\b(you're great|you're awesome|you're the best|proud of you|you're my pride and joy)\b"  # matches compliments 0_0
+    if re.search(pattern, user_input, re.IGNORECASE):
+        return random.choice(responses["Pride"])  
+    
+    pattern = r"\b(british|be brit|show me your true form)\b"  # turns it into a mate :|
+    if re.search(pattern, user_input, re.IGNORECASE):   
+        return random.choice(responses["British"])
+        
+    return "I'm not sure how to respond to that, ma'am."
+
+def main():
+    print("Codsworth: Hello, ma'am! Need anything?" )
+    while True:
+        user_input_text = input("Me: ")
+        if user_input_text.lower() in ["exit", "quit", "bye", "farewell", "goodbye"]:
+            print("Codsworth: Goodbye, ma'am!")
+            break
+        response = get_response(user_input_text)
+        print(f"Codsworth: {response}")
+
+# make it run
+if __name__ == "__main__":
+    main()

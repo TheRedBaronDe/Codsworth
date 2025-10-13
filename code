@@ -1,6 +1,24 @@
-# import the important stuff, once I actually know which ones I need
+# import the important stuff
 import random
 import re
+import json
+import os
+
+# set up a .json file with Codswoth's memories
+def load_memory():
+    if os.path.exists("memory.json"):
+        with open("memory.json", "r") as f:
+            return json.load(f)
+    else:
+        return {"name": None, "age": None, "mood": None}
+        
+#saves memories to a .json file
+def save_memory(memory):
+    with open("memory.json", "w") as f:
+        json.dump(memory, f, indent=4)
+
+# list of Codsworth "memories"
+memory = load_memory()
 
 # list of responses
 responses = {
@@ -21,7 +39,13 @@ responses = {
     "British": ["Innit, fam?"],
 
     "Weather": ["Not sure, ma'am.", "Just look through the window."],
+
+    "Alarm": ["I'll set the alarm for you, ma'am.", "Someday, ma'am."],
 }
+
+# makes Cods remember things
+def remember(key, value):
+    memory[key] = value 
 
 # get user's input
 def get_response(user_input):
@@ -35,13 +59,34 @@ def get_response(user_input):
         (r"\b(i love you|love you|love ya|i like you|like you)\b", "Love"),
         (r"\b(you're great|you're awesome|you're the best|proud of you|you're my pride and joy)\b", "Pride"),
         (r"\b(british|be brit|show me your true form)\b", "British"),
-        (r"\b(weather|how's the weather|is it raining|is it sunny|is it hot|is it cold)\b", "Weather")
+        (r"\b(weather|how's the weather|is it raining|is it sunny|is it hot|is it cold)\b", "Weather"),
+        (r"\b(alarm|set an alarm|wake me up|remind me)\b", "Alarm"),
     ]
 
     user_input = user_input.lower()
     for pattern, key in patterns:
         if re.search(pattern, user_input):
             return random.choice(responses[key])
+        
+    match = re.search(r"\b(My name is|I'm|I am|Call me)\s+(\w+)", user_input, re.IGNORECASE)
+    if match: 
+        name = match.group(2)
+        memory["name"] = name
+        save_memory(memory)
+        return f"Good to meet you, {memory['name']}!"
+    
+    match = re.search(r"\b(my age is)\b", user_input, re.IGNORECASE)
+    if match:
+        age = re.search(r"\b\d+\b", user_input)
+        if age:
+            memory["age"] = int(age.group(0))
+        if memory["age"] < 18:
+            return f"Still quite young, aren't we?"
+        elif memory["age"] < 30:
+            return f"Best years of your life!"
+        else:
+            return f"Years of experience, ma'am."
+
     return "I'm not sure how to respond to that, ma'am."
 
 def main():

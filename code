@@ -1,4 +1,4 @@
-# import the important stuff
+# import the important stuff, once I actually know which ones I need
 import random
 import re
 import json
@@ -7,10 +7,13 @@ import os
 # set up a .json file with Codswoth's memories
 def load_memory():
     if os.path.exists("memory.json"):
-        with open("memory.json", "r") as f:
-            return json.load(f)
+        with open("memory.json", "r") as file:
+            try:
+                return json.load(file)
+            except json.JSONDecodeError:
+                return {"name": "", "age": "", "mood": ""}
     else:
-        return {"name": None, "age": None, "mood": None}
+        return {"name": "", "age": "", "mood": ""}
         
 #saves memories to a .json file
 def save_memory(memory):
@@ -67,30 +70,61 @@ def get_response(user_input):
     for pattern, key in patterns:
         if re.search(pattern, user_input):
             return random.choice(responses[key])
-        
-    match = re.search(r"\b(My name is|I'm|I am|Call me)\s+(\w+)", user_input, re.IGNORECASE)
+
+# Saves user's info to a json file
+    # User's name
+    match = re.search(r"\b(My name is|Call me)\s+([A-Za-z]+)\b(?!\s*(years old|year old|\d))", user_input, re.IGNORECASE)
     if match: 
         name = match.group(2)
         memory["name"] = name
         save_memory(memory)
         return f"Good to meet you, {memory['name']}!"
     
-    match = re.search(r"\b(my age is)\b", user_input, re.IGNORECASE)
+    # User's age
+    match = re.search(r"\b(I[' ]?m|I am|My age is)\b", user_input, re.IGNORECASE)
     if match:
         age = re.search(r"\b\d+\b", user_input)
         if age:
             memory["age"] = int(age.group(0))
-        if memory["age"] < 18:
-            return f"Still quite young, aren't we?"
-        elif memory["age"] < 30:
-            return f"Best years of your life!"
-        else:
-            return f"Years of experience, ma'am."
+            save_memory(memory)
 
+            if memory["age"] < 18:
+                return f"Still quite young, aren't we?"
+            elif memory["age"] < 30:
+                return f"Best years of your life!"
+            else:
+             return f"Years of experience, ma'am."
+        
+    # User's mood
+    match = re.search(r"\b(I[' ]?m|I am)\s+(happy|sad|angry|tired|excited|bored|lonely|anxious|fine|okay|good|great|terrible)\b", user_input, re.IGNORECASE)
+    if match:
+        mood = match.group(2).lower()
+        memory["mood"] = mood
+        save_memory(memory)
+
+        if mood in ["happy", "excited", "good", "great"]:
+            return f"Good to hear."
+        elif mood in ["sad", "lonely", "tired", "terrible", "anxious"]:
+            return f"Maybe you should talk to a human instead."
+        elif mood == "angry":
+            return f"Think logically."
+        elif mood in ["fine", "okay", "bored"]:
+            return f"Why not take a break?."
+
+    # Default response if no patterns match
     return "I'm not sure how to respond to that, ma'am."
 
+# main function that runs Codsworth/greetings and loops
 def main():
-    print("Codsworth: Hello, ma'am! Need anything?" )
+    global memory
+    memory = load_memory() # loads what's stored in the json file
+    print("Codsworth: Hello, ma'am!" )
+
+    if memory["name"]:
+        print(f"Codsworth: Welcome back, {memory['name']}. Need anything?") # remembers user's name
+    if memory["mood"]:
+        print(f"Codsworth: I remember you were feeling {memory['mood']} last time.") # remembers user's mood
+
     while True:
         user_input_text = input("Me: ")
         if user_input_text.lower() in ["exit", "quit", "bye", "farewell", "goodbye"]:

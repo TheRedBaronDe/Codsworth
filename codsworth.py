@@ -3,29 +3,8 @@ import random
 import re
 import json
 import os
-import pyttsx3
 from mood import cods_mood, adjust_mood, decay_mood, apply_mood_tone
-from tts_engine import setup_engine, speak
-
-# TTS engine setup
-engine = pyttsx3.init()
-engine.say("Hello, ma'am.")
-engine.runAndWait()
-
-voices = engine.getProperty('voices')
-for v in voices:
-    if "english" in v.name.lower() and "uk" in v.name.lower():
-        engine.setProperty('voice', v.id)
-        break 
-
-engine.setProperty('rate', 175)
-engine.setProperty('volume', 0.9)
-
-engine.say("Hello, ma'am.")
-engine.runAndWait()
-
-setup_engine(engine)
-
+from tts_engine import speak, speak_async
 
 # set up a .json file with Codswoth's memories
 def load_memory():
@@ -241,7 +220,7 @@ def main():
 
         response = get_response(user_input_text)
         print(f"Codsworth: {response}")
-        speak(response)
+        speak_async(response)
 
 
 # make it run

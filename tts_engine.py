@@ -1,14 +1,29 @@
-import pyttsx3
+from gtts import gTTS
+from playsound import playsound
+import os
+import tempfile
+import threading
 
-engine = None  
-
-def setup_engine(shared_engine):
-    global engine
-    engine = shared_engine
-
-def speak(text: str):
-    if not text or engine is None:
-        print("[TTS Warning] Engine not initialized or empty text.")
+def speak(text):
+    if not text:
         return
-    engine.say(text)
-    engine.runAndWait()
+
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as fp:
+        temp_path = fp.name
+
+    try:
+        tts = gTTS(text=text, lang='en', tld='co.uk')
+        tts.save(temp_path)
+
+        # Play sound
+        playsound(temp_path)
+
+    except Exception as e:
+        print(f"[TTS Error] {e}")
+
+    finally:
+        if os.path.exists(temp_path):
+            os.remove(temp_path)
+
+def speak_async(text):
+    threading.Thread(target=speak, args=(text,)).start()
